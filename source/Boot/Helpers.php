@@ -2,15 +2,17 @@
 
 function executeMigrations(string $instance)
 {
+    echo "------------ CLASSE: " . $instance . " -----------------\n";
     $object = new $instance();
     $methods = array_reverse(get_class_methods($object));
-
+    
     foreach ($methods as $method) {
         if ($method != "__construct") {
-            echo "executando: " . $method . "\n";
+            echo "EXECUTANDO: " . $method . "\n";
             $object->$method();
         }
     }
+    echo "----------------------------------------------\n";
 }
 
 function transformCamelCaseToSnakeCase(array $args)
