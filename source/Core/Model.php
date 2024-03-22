@@ -31,6 +31,7 @@ abstract class Model
     /** @var string */
     protected $terms;
 
+    /** @var array */
     protected $params;
 
     /** @var string */
@@ -65,7 +66,7 @@ abstract class Model
         $this->entity = $entity;
         $this->protected = $protected;
         $this->required = $required;
-
+        $this->params = [];
         $this->message = new Message();
     }
 
@@ -138,7 +139,7 @@ abstract class Model
         if (!empty($distinct) && !empty($this->columns)) {
             $distinct .= ", ";
         }
-        
+
         $this->query = "
             SELECT {$distinct}{$this->columns} 
             FROM {$this->entity} 
@@ -170,7 +171,7 @@ abstract class Model
      * @param string $entity Nome da tabela, se nulo vai pegar a do model
      * @return Model
      */
-    private function setTerms(string $terms, string $params, ?string $entity = null): Model
+    private function setTerms(string $terms, string $params, ?string $entity = null, array &$data): Model
     {
         $entity = empty($entity) ? $this->entity : $entity;
 
@@ -199,7 +200,6 @@ abstract class Model
         );
 
         $parts = explode("&", $params);
-        $data = [];
 
         if (!empty($parts)) {
             foreach ($parts as $part) {
@@ -208,7 +208,6 @@ abstract class Model
             }
         }
 
-        $this->params = $data;
         return $this;
     }
 
@@ -240,7 +239,7 @@ abstract class Model
         $this->setColumns($columns);
 
         if (!empty($terms)) {
-            $this->setTerms($terms, $params);
+            $this->setTerms($terms, $params, null, $this->params);
         }
 
         $this->setQuery();
@@ -364,7 +363,7 @@ abstract class Model
         $entityJoinId = empty($this->objJoin->entityJoinId) ? $this->protected[0] : $this->objJoin->entityJoinId;
 
         if (!empty($this->objJoin->terms)) {
-            $this->setTerms($this->objJoin->terms, $this->objJoin->params, $this->objJoin->entity);
+            $this->setTerms($this->objJoin->terms, $this->objJoin->params, $this->objJoin->entity, $this->params);
         }
 
         $columns = !empty($this->objJoin->columns) ? $this->objJoin->columns : "*";
@@ -423,9 +422,8 @@ abstract class Model
 
     public function setAdvancedJoin(): Model
     {
-
         if (!empty($this->objJoin->terms)) {
-            $this->setTerms($this->objJoin->terms, $this->objJoin->params, $this->objJoin->entity);
+            $this->setTerms($this->objJoin->terms, $this->objJoin->params, $this->objJoin->entity, $this->params);
         }
         if (!empty($this->objJoin->columns)) {
             $this->setColumns($this->objJoin->columns, $this->objJoin->entity);
@@ -730,6 +728,11 @@ abstract class Model
             $filter[$key] = (is_null($value) ? null : filter_variable($value, 'default'));
         }
         return $filter;
+    }
+
+    public function setRequiredFields(array $required)
+    {
+        $this->required = $required;
     }
 
     /**
