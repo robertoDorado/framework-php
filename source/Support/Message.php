@@ -106,9 +106,17 @@ class Message
     /**
      * @return void
      */
-    public function json()
+    public function json(bool $assoc = true): string
     {
-        return json_encode(["error", $this->getText()]);
+        $verifyKeyTypeJsonMessage = [
+            "info bg-info" => "info",
+            "success bg-success" => "success",
+            "warning bg-warning" => "warning",
+            "error bg-danger" => "error"
+        ];
+
+        $key = $verifyKeyTypeJsonMessage[$this->type];
+        return $assoc ? json_encode([$key => $this->getText()]) : json_encode([$key, $this->getText()]);
     }
 
     /**
