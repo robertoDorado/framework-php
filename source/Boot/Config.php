@@ -19,7 +19,7 @@ define("CONF_VIEW_THEME", "mytheme");
 /**
  * Database Setup
  */
-define("CONF_DB_HOST", "localhost");
+define("CONF_DB_HOST", "db-framework-php");
 define("CONF_DB_USER", "root");
-define("CONF_DB_PASS", "");
+define("CONF_DB_PASS", "root");
 define("CONF_DB_NAME", "framework_php");
