@@ -3,8 +3,8 @@
 /**
  * Main Setup
  */
-define("CONF_URL_BASE", "https://localhost/framework-php");
-define("CONF_URL_TEST", "https://localhost/framework-php");
+define("CONF_URL_BASE", "https://localhost");
+define("CONF_URL_TEST", "https://localhost");
 define("CONF_SITE_NAME", "framework-php");
 define("CONF_MAIL", "robertodorado7@gmail.com");
 
