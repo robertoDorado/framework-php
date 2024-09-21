@@ -22,7 +22,7 @@ This guide explains how to install `mkcert` on a Windows machine using Chocolate
     Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
     ```
 
-## Instalar o mkcert usando o Chocolatey
+## Installing mkcert using Chocolatey
 
 1. After installing Chocolatey, in the same PowerShell **with administrator permissions**, run the following command to install `mkcert`:
 
