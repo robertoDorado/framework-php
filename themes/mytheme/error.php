@@ -1,2 +1,2 @@
 <?php $v->layout("_theme") ?>
-<h1>Error: <?= $error_code ?></h1>
+<h1>Error: <?= $status_code ?></h1>
