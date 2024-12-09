@@ -1,12 +1,9 @@
 <?php
 
 use Slim\Factory\AppFactory;
-use Slim\Routing\RouteCollectorProxy as Group;
 use Source\Controllers\Error;
-use Source\Controllers\Home;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Exception\HttpMethodNotAllowedException;
-use Source\Middleware\MiddlewareExample;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpException;
 
@@ -68,16 +65,21 @@ $errorMiddleware->setDefaultErrorHandler(function (
     return $dispatchError($exception);
 });
 
-$app->group("/", function(Group $group) {
-    $group->get("", [Home::class, 'index']);
-    $group->get("form", [Home::class, 'form']);
-    $group->post("form", [Home::class, 'form']);
-    $group->get("form-ajax", [Home::class, 'formAjax']);
-})->add(new MiddlewareExample());
+function loadRouter($directory, $app) {
+    $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
+    foreach ($iterator as $file) {
+        if ($file->isFile() && pathinfo($file, PATHINFO_EXTENSION) === 'php') {
+            $routeDefinition = require_once $file->getPathname();
+            if (is_callable($routeDefinition)) {
+                $routeDefinition($app);
+            }
+        }
+    }
+}
 
-$app->post("/form-ajax", [Home::class, 'formAjax']);
-$app->group("/ops", function(Group $group) {
-    $group->get("/error/{status_code}", [Error::class, 'index']);
-});
+$webRouter = __DIR__ . '/routes/web';
+$apiRouter = __DIR__ . '/routes/api';
 
+loadRouter($webRouter, $app);
+loadRouter($apiRouter, $app);
 $app->run();
